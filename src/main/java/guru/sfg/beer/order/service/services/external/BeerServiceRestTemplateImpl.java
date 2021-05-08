@@ -1,8 +1,10 @@
-package guru.sfg.beer.order.service.services.inventory;
+package guru.sfg.beer.order.service.services.external;
 
-import java.util.UUID;
+import java.util.Optional;
 
-import guru.sfg.beer.order.service.services.inventory.model.BeerDTO;
+import javax.swing.text.html.Option;
+
+import guru.sfg.beer.order.service.services.external.model.BeerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,10 +24,10 @@ public class BeerServiceRestTemplateImpl
 
   private final RestTemplate restTemplate;
 
-  private String beerInventoryServiceHost;
+  private String beerServiceHost;
 
-  public void setBeerInventoryServiceHost(String beerInventoryServiceHost) {
-    this.beerInventoryServiceHost = beerInventoryServiceHost;
+  public void setBeerServiceHost(String beerServiceHost) {
+    this.beerServiceHost = beerServiceHost;
   }
 
   public BeerServiceRestTemplateImpl(RestTemplateBuilder restTemplateBuilder) {
@@ -33,14 +35,14 @@ public class BeerServiceRestTemplateImpl
   }
 
   @Override
-  public BeerDTO getBeerByUpc(String upc) {
+  public Optional<BeerDTO> getBeerByUpc(String upc) {
     log.debug("Calling beer service");
 
     ResponseEntity<BeerDTO> responseEntity = restTemplate
-        .exchange(beerInventoryServiceHost + INVENTORY_PATH, HttpMethod.GET, null,
+        .exchange(beerServiceHost + INVENTORY_PATH, HttpMethod.GET, null,
             new ParameterizedTypeReference<BeerDTO>() { }, (Object) upc
         );
 
-    return responseEntity.getBody();
+    return Optional.of(responseEntity.getBody());
   }
 }

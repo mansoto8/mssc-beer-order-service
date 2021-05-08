@@ -1,8 +1,12 @@
 package guru.sfg.beer.order.service.web.mappers;
 
+import java.util.Optional;
+
+import javax.swing.text.html.Option;
+
 import guru.sfg.beer.order.service.domain.BeerOrderLine;
-import guru.sfg.beer.order.service.services.inventory.BeerService;
-import guru.sfg.beer.order.service.services.inventory.model.BeerDTO;
+import guru.sfg.beer.order.service.services.external.BeerService;
+import guru.sfg.beer.order.service.services.external.model.BeerDTO;
 import guru.sfg.beer.order.service.web.model.BeerOrderLineDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,9 +30,12 @@ public abstract class BeerOrderLineMapperDecorator
   @Override
   public BeerOrderLineDto beerOrderLineToDto(BeerOrderLine beerOrderLine) {
     BeerOrderLineDto dto = mapper.beerOrderLineToDto(beerOrderLine);
-    BeerDTO beerDTO = beerService.getBeerByUpc(beerOrderLine.getUpc());
-    dto.setBeerName(beerDTO.getBeerName());
-    dto.setBeerId(beerDTO.getId());
+    Optional<BeerDTO> beerDTOOptional = beerService.getBeerByUpc(beerOrderLine.getUpc());
+
+    beerDTOOptional.ifPresent(beerDTO -> {
+        dto.setBeerName(beerDTO.getBeerName());
+        dto.setBeerId(beerDTO.getId());
+    } );
 
     return dto;
   }

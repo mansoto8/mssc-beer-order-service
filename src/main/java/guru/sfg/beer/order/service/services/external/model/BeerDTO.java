@@ -1,4 +1,4 @@
-package guru.sfg.beer.order.service.services.inventory.model;
+package guru.sfg.beer.order.service.services.external.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
